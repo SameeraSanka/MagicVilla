@@ -67,6 +67,30 @@ namespace MagicVilla_VillaAPI.Controllers
 
 			//return Ok(villaDTO); // meka mehema return krnna pukuwanaulak na. eth itawda hodai pahala widihata use krna eka.
 			return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO); // mehema denakota wenama function ekakata return krnna puluwan. methandi kra thiynne Gellvilla kiyna ekata return krla thiynne
-		} 
+		}
+
+		// delete Villa
+		[HttpDelete("{id:int}", Name = "DeleteVilla")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult DeleteVilla(int id)
+		{
+			if(id == 0)
+			{
+				return BadRequest();
+			}
+			var villa = VillaStore.villaList.FirstOrDefault(villa=>villa.Id == id);
+			if(villa == null)
+			{
+				return NotFound();
+			}
+			VillaStore.villaList.Remove(villa);
+			return Ok(villa);
+			//return NoContent(); //meka mehema dannath puluwan
+		}
+
+
 	}
 }
