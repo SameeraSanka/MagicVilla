@@ -91,6 +91,29 @@ namespace MagicVilla_VillaAPI.Controllers
 			//return NoContent(); //meka mehema dannath puluwan
 		}
 
+		//update all recode
+		[HttpPut("{id:int}", Name = "UpdateVilla")]
+		[ProducesResponseType(StatusCodes.Status204NoContent)]
+		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status404NotFound)]
+		[ProducesResponseType(StatusCodes.Status400BadRequest)]
+		public IActionResult UpdateVilla(int id, [FromBody] VillaDTO villaDTO)
+		{
+			if(villaDTO == null || id != villaDTO.Id)
+			{
+				return BadRequest();
+			}
+			var villa = VillaStore.villaList.FirstOrDefault(villa => villa.Id == id);
+			if(villa == null)
+			{
+				return NotFound();
+			}
+			villa.Name = villaDTO.Name;
+			villa.Sqft = villaDTO.Sqft;
+			villa.Occupency = villaDTO.Occupency;
 
+			return Ok(villa);
+		}
+		
 	}
 }
