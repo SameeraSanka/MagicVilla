@@ -20,7 +20,7 @@ namespace MagicVilla_VillaAPI.Controllers
 		}
 
 		//get one villa
-		[HttpGet("{id:int}")]
+		[HttpGet("{id:int}", Name ="GetVilla")] // methana me dena Name ea denne function name eka widihata.
 		[ProducesResponseType(StatusCodes.Status200OK)] 
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -43,7 +43,7 @@ namespace MagicVilla_VillaAPI.Controllers
 
 		//crate a villa
 		[HttpPost]
-		[ProducesResponseType(StatusCodes.Status200OK)]
+		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
 		public ActionResult<VillaDTO> CreateVilla([FromBody]VillaDTO villaDTO)
@@ -59,7 +59,8 @@ namespace MagicVilla_VillaAPI.Controllers
 			villaDTO.Id = VillaStore.villaList.OrderByDescending(villa=>villa.Id).FirstOrDefault().Id +1;
 			VillaStore.villaList.Add(villaDTO);
 
-			return Ok(villaDTO);
+			//return Ok(villaDTO); // meka mehema return krnna pukuwanaulak na. eth itawda hodai pahala widihata use krna eka.
+			return CreatedAtRoute("GetVilla", new { id = villaDTO.Id }, villaDTO); // mehema denakota wenama function ekakata return krnna puluwan. methandi kra thiynne Gellvilla kiyna ekata return krla thiynne
 		} 
 	}
 }
