@@ -1,7 +1,10 @@
+using AutoMapper;
+using MagicVilla_VillaAPI;
 using MagicVilla_VillaAPI.Data;
 using MagicVilla_VillaAPI.Logger;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +14,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
 	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultSQLConnection"));
 });
+
+
+builder.Services.AddAutoMapper(typeof(MappingConfig)); //methana reg kranwa automapper eka
 
 //mela user login ekak newei me kiynne  system eke log gana. mekata packages 2k insrtal krnna one. eka nuget package manager eke athi
 //Log.Logger = new LoggerConfiguration().MinimumLevel.Information()
