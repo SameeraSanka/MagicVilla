@@ -48,9 +48,6 @@ namespace MagicVilla_VillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)] 
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		//[ProducesResponseType(200, Type = typeof(VillaDTO))] // mehema Type eka dammama function eke type eka dnna one na. mehema dmmama swager eke  expect krana data pennanwa
-		//[ProducesResponseType(404)]
-		//[ProducesResponseType(400)]
 		public async Task<ActionResult<VillaDTO>> GetVilla(int id)
 		{
 			if (id == 0)
@@ -84,28 +81,12 @@ namespace MagicVilla_VillaAPI.Controllers
 			{
 				return BadRequest(villaCreateDTO);
 			}
-			//if (villaCreateDTO.Id > 0)
-			//{
-			//	return StatusCode(StatusCodes.Status500InternalServerError);
-			//}
 
 			Villa model = _mapper.Map<Villa>(villaCreateDTO);
-			//Villa model = new Villa()
-			//{
-			//	//Id = villaCreateDTO.Id,
-			//	Name = villaCreateDTO.Name,
-			//	Details = villaCreateDTO.Details,
-			//	ImageUrl = villaCreateDTO.ImageUrl,
-			//	Occupancy = villaCreateDTO.Occupancy,
-			//	Rate = villaCreateDTO.Rate,
-			//	Sqft = villaCreateDTO.Sqft,
-			//	Amenity = villaCreateDTO.Amenity,
-			//};
 
 			await _db.Villas.AddAsync(model);
 			await _db.SaveChangesAsync();
 
-			//return Ok(villaDTO); // meka mehema return krnna pukuwanaulak na. eth itawda hodai pahala widihata use krna eka.
 			return CreatedAtRoute("GetVilla", new { id = model.Id }, model); // mehema denakota wenama function ekakata return krnna puluwan. methandi kra thiynne Gellvilla kiyna ekata return krla thiynne
 		}
 
@@ -150,18 +131,7 @@ namespace MagicVilla_VillaAPI.Controllers
 				return BadRequest(ModelState);
 			}
 			Villa model = _mapper.Map<Villa>(villaUpdateDTO);
-			//Villa model = new()
-			//{
-			//	Id = villaUpdateDTO.Id,
-			//	Name = villaUpdateDTO.Name,
-			//	Details = villaUpdateDTO.Details,
-			//	ImageUrl = villaUpdateDTO.ImageUrl,
-			//	Occupancy = villaUpdateDTO.Occupancy,
-			//	Rate = villaUpdateDTO.Rate,
-			//	Sqft = villaUpdateDTO.Sqft,
-			//	Amenity = villaUpdateDTO.Amenity,
-			//};
-
+			
 			_db.Villas.Update(model);
 			await _db.SaveChangesAsync();
 			return Ok(model);
@@ -182,17 +152,6 @@ namespace MagicVilla_VillaAPI.Controllers
 
 			VillaUpdateDTO villaDTO = _mapper.Map<VillaUpdateDTO>(villa);
 
-			//VillaUpdateDTO villaDTO = new ()
-			//{
-			//	Id = villa.Id,
-			//	Name = villa.Name,
-			//	Details = villa.Details,
-			//	ImageUrl = villa.ImageUrl,
-			//	Occupancy = villa.Occupancy,
-			//	Rate = villa.Rate,
-			//	Sqft = villa.Sqft,
-			//	Amenity = villa.Amenity,
-			//};
 			if (villa == null)
 			{
 				return NotFound();
@@ -201,17 +160,6 @@ namespace MagicVilla_VillaAPI.Controllers
 
 			Villa model = _mapper.Map<Villa>(villaDTO);
 
-			//Villa model = new Villa()
-			//{
-			//	Id = villaDTO.Id,
-			//	Name = villaDTO.Name,
-			//	Details = villaDTO.Details,
-			//	ImageUrl = villaDTO.ImageUrl,
-			//	Occupancy = villaDTO.Occupancy,
-			//	Rate = villaDTO.Rate,
-			//	Sqft = villaDTO.Sqft,
-			//	Amenity = villaDTO.Amenity,
-			//};
 			_db.Villas.Update(model);
 			await _db.SaveChangesAsync();
 			if (!ModelState.IsValid)
