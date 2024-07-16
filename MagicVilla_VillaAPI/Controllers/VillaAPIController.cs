@@ -33,10 +33,10 @@ namespace MagicVilla_VillaAPI.Controllers
 		// get all villa
 		[HttpGet]
 		[ProducesResponseType(StatusCodes.Status200OK)]
-		public ActionResult<IEnumerable<VillaDTO>> GetVillas()
+		public async Task<ActionResult<IEnumerable<VillaDTO>>> GetVillas()
 		{
 			_logger.Log("Getting all villas", "");
-			return Ok(_db.Villas.ToList());
+			return Ok(await _db.Villas.ToListAsync());
 		}
 
 		//get one villa
@@ -47,14 +47,14 @@ namespace MagicVilla_VillaAPI.Controllers
 		//[ProducesResponseType(200, Type = typeof(VillaDTO))] // mehema Type eka dammama function eke type eka dnna one na. mehema dmmama swager eke  expect krana data pennanwa
 		//[ProducesResponseType(404)]
 		//[ProducesResponseType(400)]
-		public ActionResult<VillaDTO> GetVilla(int id)
+		public async Task<ActionResult<VillaDTO>> GetVilla(int id)
 		{
 			if (id == 0)
 			{
 				_logger.Log("Get Villa Error with Id " + id, "error");
 				return BadRequest();
 			}
-			var villa = _db.Villas.FirstOrDefault(villa => villa.Id == id);
+			var villa = await _db.Villas.FirstOrDefaultAsync(villa => villa.Id == id);
 			if (villa == null)
 			{
 				_logger.Log("Not Found Id :"+ id, "error");
@@ -68,10 +68,10 @@ namespace MagicVilla_VillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status201Created)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
 		[ProducesResponseType(StatusCodes.Status500InternalServerError)]
-		public ActionResult<VillaDTO> CreateVilla([FromBody]VillaCreateDTO villaCreateDTO)
+		public async Task<ActionResult<VillaDTO>> CreateVilla([FromBody]VillaCreateDTO villaCreateDTO)
 		{
 			//Custom Error msg pennanne mehema
-			if(_db.Villas.FirstOrDefault(villa=>villa.Name.ToLower() == villaCreateDTO.Name.ToLower())!=null)
+			if(await _db.Villas.FirstOrDefaultAsync(villa=>villa.Name.ToLower() == villaCreateDTO.Name.ToLower())!=null)
 			{
 				ModelState.AddModelError("CustomError", "Villa Already Exhist");
 				return BadRequest(ModelState);
@@ -96,8 +96,8 @@ namespace MagicVilla_VillaAPI.Controllers
 				Amenity = villaCreateDTO.Amenity,
 			};
 
-			_db.Villas.Add(model);
-			_db.SaveChanges();
+			await _db.Villas.AddAsync(model);
+			await _db.SaveChangesAsync();
 
 			//return Ok(villaDTO); // meka mehema return krnna pukuwanaulak na. eth itawda hodai pahala widihata use krna eka.
 			return CreatedAtRoute("GetVilla", new { id = model.Id }, model); // mehema denakota wenama function ekakata return krnna puluwan. methandi kra thiynne Gellvilla kiyna ekata return krla thiynne
@@ -109,19 +109,19 @@ namespace MagicVilla_VillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public IActionResult DeleteVilla(int id)
+		public async Task<IActionResult> DeleteVilla(int id)
 		{
 			if(id == 0)
 			{
 				return BadRequest();
 			}
-			var villa = _db.Villas.FirstOrDefault(villa=>villa.Id == id);
+			var villa =  await _db.Villas.FirstOrDefaultAsync(villa => villa.Id == id);
 			if(villa == null)
 			{
 				return NotFound();
 			}
-			_db.Villas.Remove(villa);
-			_db.SaveChanges();
+			 _db.Villas.Remove(villa);
+			await _db.SaveChangesAsync();
 			return Ok(villa);
 			//return NoContent(); //meka mehema dannath puluwan
 		}
@@ -132,7 +132,7 @@ namespace MagicVilla_VillaAPI.Controllers
 		[ProducesResponseType(StatusCodes.Status200OK)]
 		[ProducesResponseType(StatusCodes.Status404NotFound)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public IActionResult UpdateVilla(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
+		public async Task<IActionResult> UpdateVilla(int id, [FromBody] VillaUpdateDTO villaUpdateDTO)
 		{
 			if (villaUpdateDTO == null || id != villaUpdateDTO.Id)
 			{
@@ -157,7 +157,7 @@ namespace MagicVilla_VillaAPI.Controllers
 			};
 
 			_db.Villas.Update(model);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 			return Ok(model);
 		}
 
@@ -166,13 +166,13 @@ namespace MagicVilla_VillaAPI.Controllers
 		[HttpPatch("{id:int}", Name = "UpdatePartialVilla")]
 		[ProducesResponseType(StatusCodes.Status204NoContent)]
 		[ProducesResponseType(StatusCodes.Status400BadRequest)]
-		public IActionResult UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
+		public async Task<IActionResult> UpdatePartialVilla(int id, JsonPatchDocument<VillaUpdateDTO> patchDTO)
 		{
 			if(patchDTO == null || id == 0)
 			{
 				return BadRequest();
 			}
-			var villa = _db.Villas.AsNoTracking().FirstOrDefault(villa=>villa.Id == id);
+			var villa = await _db.Villas.AsNoTracking().FirstOrDefaultAsync(villa=>villa.Id == id);
 
 			VillaUpdateDTO villaDTO = new ()
 			{
@@ -202,7 +202,7 @@ namespace MagicVilla_VillaAPI.Controllers
 				Amenity = villaDTO.Amenity,
 			};
 			_db.Villas.Update(model);
-			_db.SaveChanges();
+			await _db.SaveChangesAsync();
 			if (!ModelState.IsValid)
 			{
 				return BadRequest(ModelState);
